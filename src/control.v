@@ -39,12 +39,6 @@ module control(
                 Branch = 1'b1;
                 MemtoReg = 1'b0;
             end
-            7'b1100111: begin // J-type - JALR
-            RegWrite = 1'b1;
-            Branch   = 1'b1;
-            ALUSrc   = 1'b1;
-            MemtoReg = 2'b10;
-        end
             7'b0000011: begin // I-type - load
                 RegWrite = 1'b1;
                 MemRead = 1'b1;
@@ -57,11 +51,8 @@ module control(
                 ALUSrc = 1'b1;
                 ALUOp = 2'b00;
             end
-            7'b1101111: begin //SYS-type
-                
+            default: begin
             end
-           default: begin
-           end
         endcase
     end
 
