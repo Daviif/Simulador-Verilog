@@ -1,16 +1,15 @@
 module pc(
-    input logic clock,
-    input logic reset,
-    input logic [31:0] pc_prox,
-    output logic [31:0] pc_out
+    input wire clock,
+    input wire reset,
+    input wire [31:0] pc_prox,
+    output reg [31:0] pc
 );
 
     always @(posedge clock or posedge reset) begin
-        if (reset) begin
-            pc_out <= 32'b0; // Reset the program counter to 0
-        end else begin
-            pc_out <= pc_prox; // Update the program counter with the next endereco
-        end
+        if (reset)
+            pc <= 32'b0;
+        else
+            pc <= pc_prox;
     end
 
 endmodule

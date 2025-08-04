@@ -1,17 +1,25 @@
 module alu(
-    input logic [31:0] a,
-    input logic [31:0] b,
-    input logic [2:0] alu_control,
-    output logic [31:0] resultado,
-    output logic zero
+    input wire [31:0] entrada1,
+    input wire [31:0] entrada2,
+    input wire [3:0] alu_control,
+    output reg [31:0] resultado,
+    output wire zero
 );
-    assign resultado = (alu_control == 3'b000) ? a + b : // ADD
-                  (alu_control == 3'b001) ? a - b : // SUB
-                  (alu_control == 3'b010) ? a & b : // AND
-                  (alu_control == 3'b011) ? a | b : // OR
-                  (alu_control == 3'b100) ? a ^ b : // XOR
-                  (alu_control == 3'b101) ? ~(a | b) : // NOR
-                  (alu_control == 3'b110) ? a << b[4:0] : // SLL
-                  (alu_control == 3'b111) ? a >> b[4:0] : 32'b0; // SRL
+
+    assign zero = (resultado == 32'b0);
+    always @(*) begin
+        case (alu_control)
+           4'b0010: resultado = entrada1 + entrada2;                // ADD
+            4'b0110: resultado = entrada1 - entrada2;                // SUB
+            4'b0000: resultado = entrada1 & entrada2;                // AND
+            4'b0001: resultado = entrada1 | entrada2;                // OR
+            4'b0100: resultado = entrada1 ^ entrada2;                // XOR
+            4'b0101: resultado = ~(entrada1 | entrada2);             // NOR
+            4'b0111: resultado = ($signed(entrada1) < $signed(entrada2)) ? 32'd1 : 32'd0; // SLT (se quiser)
+            4'b1000: resultado = entrada1 << entrada2[4:0];          // SLL
+            4'b1001: resultado = entrada1 >> entrada2[4:0];          // SRL
+            default: resultado = 32'b0;
+        endcase
+    end
 
 endmodule

@@ -1,9 +1,9 @@
 module mux2 #(parameter WIDTH = 32)(
-    input logic sel,
-    input logic [WIDTH-1:0] a,
-    input logic [WIDTH-1:0] b,
-    output logic [WIDTH-1:0] y
+    input wire seletor,
+    input wire [WIDTH-1:0] entrada1,
+    input wire [WIDTH-1:0] entrada2,
+    output wire [WIDTH-1:0] saida
 );
-    assign y = (sel) ? b : a;
+    assign saida = (seletor) ? entrada2 : entrada1;
 
 endmodule

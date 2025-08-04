@@ -1,46 +1,45 @@
-// ================================
-// Testbench para o processador RISC-V
-// ================================
-
 `timescale 1ns/1ps
 
 module testbench;
 
-    logic clock;
-    logic reset;
+    reg clock;
+    reg reset;
 
-    // Instancia o módulo top-level da CPU
     cpu uut (
         .clock(clock),
         .reset(reset)
     );
 
-    // Geração do clock: período de 10ns (100MHz)
-    always #5 clock = ~clock;
+    integer errors;
 
-    // Sequência de teste
     initial begin
-        $display("Iniciando simulação...");
+        $dumpfile("testbench.vcd");
+        $dumpvars(0, uut);
 
-        // Inicialização
+        
         clock = 0;
         reset = 1;
+        errors = 0;
 
-        // Espera duas bordas de clock
         #10;
         reset = 0;
 
-        // Executa por um tempo suficiente para várias instruções
-        #500;
+        #100;
 
-        $display("Finalizando simulação.");
+        $display("=== Resultado do Testbench: ===");
+
+        
+
+        $display("x3 = %d (deve ser 5)", uut.registradores.registradores[3]);
+        $display("x4 = %d (deve ser 5)", uut.registradores.registradores[4]);
+        $display("x5 = %d (deve ser 0 instruçõa pulada)", uut.registradores.registradores[5]);
+        $display("x6 = %d (deve ser 0 x5+x5)", uut.registradores.registradores[6]);
+        $display("Data Memory[1] =%d (deve ser 5)", uut.dataMem.memoria[1]);
+
         $finish;
     end
 
-    // Dump para visualização de sinais (opcional para GTKWave)
-    initial begin
-        $dumpfile("testbench.vcd");
-        $dumpvars(0, testbench);
+   always begin
+        #5 clock = ~clock; // Toggle clock every 5 time units
     end
-
 endmodule
