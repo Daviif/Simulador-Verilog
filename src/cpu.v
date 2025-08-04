@@ -13,9 +13,10 @@ module cpu (
     wire [4:0] rs2 = instrucao[24:20];
     wire [6:0] funct7 = instrucao[31:25];
 
-    wire Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
+    wire Branch, MemRead, MemWrite, ALUSrc, RegWrite;
     wire [1:0] ALUOp;
     wire [3:0] alu_control;
+    wire [1:0] MemtoReg;
 
 
     wire [31:0] read_data1, read_data2;
