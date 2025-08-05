@@ -5,7 +5,8 @@ module cpu (
 
     //IF
     wire [31:0] pc_IF;
-    wire [31:0] pc_plus4_IF = pc + 32'd4;
+    wire [31:0] pc_prox;
+    wire [31:0] pc_plus4_IF = pc_IF + 32'd4;
     wire [31:0] instrucao_IF;
 
     //ID
@@ -46,9 +47,8 @@ module cpu (
     wire [31:0] read_data2_MEM;
     wire [4:0] rd_MEM;
 
-    wire [31:0] MemRead_MEM, MemWrite_MEM, RegWrite_MEM;
+    wire MemRead_MEM, MemWrite_MEM, RegWrite_MEM;
     wire [1:0] MemtoReg_MEM;
-
     wire [31:0] MemRead_data_MEM;
 
     //WB
@@ -59,8 +59,9 @@ module cpu (
     wire RegWrite_WB;
     wire [1:0] MemtoReg_WB;
     wire [31:0] MemRead_data_WB;
+    wire [31:0] write_back_data_WB;
 
-    wire [1:0] fowardA, forwardB;
+    wire [1:0] forwardA, forwardB;
     unidade_fowarding fwd(
         .entrada1EX(rs1_EXE),
         .entrada2EX(rs2_EXE),
@@ -68,7 +69,7 @@ module cpu (
         .RegWrite_memoria(RegWrite_MEM),
         .rd_WB(rd_WB),
         .RegWrite_WB(RegWrite_WB),
-        .fowardA(fowardA),
+        .forwardA(forwardA),
         .forwardB(forwardB)
     );
 
@@ -149,7 +150,7 @@ module cpu (
     wire [31:0] alu_entrada1, alu_entrada2;
 
     mux3_1 #(.WIDTH(32)) fwd_mux1(
-        .seletor(fowardA),
+        .seletor(forwardA),
         .entrada0(read_data1_EXE),
         .entrada1(alu_result_MEM),
         .entrada2(write_back_data_WB),
@@ -157,7 +158,7 @@ module cpu (
     );
 
     mux3_1 #(.WIDTH(32)) fwd_mux2(
-        .seletor(fowardB),
+        .seletor(forwardB),
         .entrada0(read_data2_EXE),
         .entrada1(alu_result_MEM),
         .entrada2(write_back_data_WB),
@@ -183,7 +184,7 @@ module cpu (
 
 
     assign alu_result_MEM = alu_result_EXE;
-    assign read_data2_mem = alu_entrada2;
+    assign read_data2_mem = read_data2_EXE;
     assign rd_MEM = rd_EXE;
 
     assign MemRead_MEM = MemRead_EXE;
@@ -209,7 +210,7 @@ module cpu (
     assign MemtoReg_WB = MemtoReg_MEM;
 
     mux2 #(.WIDTH(32)) write_back_mux(
-        .seletor(MemtoReg-WB[0]),
+        .seletor(MemtoReg_WB[0]),
         .entrada1(alu_result_WB),
         .entrada2(MemRead_data_WB),
         .saida(write_back_data_WB)
