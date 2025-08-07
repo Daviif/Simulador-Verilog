@@ -1,8 +1,8 @@
 module control(
     input wire [6:0] opcode,
     output reg Branch, MemRead, MemWrite, ALUSrc, RegWrite,
-    output reg MemtoReg[1:0],
-    output logic [1:0] ALUOp    
+    output reg MemtoReg,
+    output reg [1:0] ALUOp    
 );
 
     always @(*) begin
@@ -11,7 +11,7 @@ module control(
         MemWrite = 1'b0;
         ALUSrc = 1'b0;
         RegWrite = 1'b0;
-        MemtoReg = 2'b00;
+        MemtoReg = 1'b0;
         ALUOp = 2'b00;
         
         case(opcode)
@@ -42,7 +42,7 @@ module control(
             7'b0000011: begin // I-type - load
                 RegWrite = 1'b1;
                 MemRead = 1'b1;
-                MemtoReg = 2'b01;
+                MemtoReg = 1'b1;
                 ALUSrc = 1'b1;
                 ALUOp = 2'b00;
             end

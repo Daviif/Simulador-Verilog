@@ -7,7 +7,7 @@ module pc(
 
     always @(posedge clock or posedge reset) begin
         if (reset)
-            pc <= 32'b0;
+            pc <= 0;
         else
             pc <= pc_prox;
     end

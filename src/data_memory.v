@@ -7,11 +7,7 @@ module data_memory(
 );
     reg [31:0] memoria [0:255];
 
-    initial begin
-        memoria[0] = 32'd5;
-    end
-
-    assign read_data = MemRead ? memoria[endereco[9:2]] : 32'bz;
+    assign read_data = MemRead ? memoria[endereco[9:2]] : 32'b0;
 
     always @(posedge clock) begin
         if (MemWrite) begin

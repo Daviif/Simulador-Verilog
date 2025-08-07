@@ -30,12 +30,12 @@ module testbench;
 
         
 
-        $display("x1 = %d (deve ser 0)", uut.registradores.registradores[1]);
-        $display("x4 = %d (deve ser 20)", uut.registradores.registradores[4]);
-        $display("x5 = %d (deve ser 16)", uut.registradores.registradores[5]);
-        $display("x6 = %d (deve ser 20)", uut.registradores.registradores[6]);
-        $display("x7 = %d (deve ser 8)", uut.registradores.registradores[7]);
-        $display("Data Memory[1] =%d (deve ser 20)", uut.dataMem.memoria[1]);
+        $display("x1 = %d", uut.registradores.registradores[1]);
+        $display("x4 = %d", uut.registradores.registradores[4]);
+        $display("x5 = %d", uut.registradores.registradores[5]);
+        $display("x6 = %d", uut.registradores.registradores[6]);
+        $display("x7 = %d", uut.registradores.registradores[7]);
+        $display("Data Memory[1] =%d", uut.dataMem.memoria[1]);
 
         $finish;
     end

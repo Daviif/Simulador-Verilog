@@ -7,6 +7,7 @@ module alu(
 );
 
     assign zero = (resultado == 32'b0);
+    
     always @(*) begin
         case (alu_control)
            4'b0010: resultado = entrada1 + entrada2;                // ADD

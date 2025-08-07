@@ -4,7 +4,9 @@ module instruction_memory(
 );
     reg [31:0] memoria [0:9];
 
-    initial $readmemb("programa.bin", memoria);
+    initial begin
+        $readmemb("programa.bin", memoria);
+    end
 
     assign instrucao = memoria[endereco[9:2]];
 endmodule

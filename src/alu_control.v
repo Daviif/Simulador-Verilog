@@ -4,8 +4,6 @@ module alu_control(
     input wire [6:0] funct7,
     output reg [3:0] alu_control
 );
-
-    wire funct7_5 = funct7[5];
     
     always @(*) begin
         case (aluOp)
