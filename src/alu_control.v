@@ -11,11 +11,12 @@ module alu_control(
 
         case (ALUOp)
             2'b00: begin
-                // Tipicamente usado para loads/stores (ADD) e instruções I-type
+                // ALUOp=00: Para loads, stores, e instruções I-type imediatas
+                // NOTA: funct3=010 em loads/stores deve usar ADD, não SLT!
                 case (funct3)
                     3'b000: alu_control = 4'b0000; // ADD / ADDI / LW / SW
                     3'b001: alu_control = 4'b1000; // SLLI
-                    3'b010: alu_control = 4'b0110; // SLTI (signed)
+                    3'b010: alu_control = 4'b0000; // LW/SW (usa ADD) / SLTI - CORRIGIDO!
                     3'b011: alu_control = 4'b0111; // SLTIU (unsigned)
                     3'b100: alu_control = 4'b0100; // XORI
                     3'b101: begin                   // SRLI / SRAI (depende de funct7[5])

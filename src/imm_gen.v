@@ -17,10 +17,10 @@ module imm_gen (
             7'b0100011:
                 imm_out = {{20{instrucao[31]}}, instrucao[31:25], instrucao[11:7]};
 
-            // B-type (ex.: beq, bne)
+            // B-type (ex.: beq, bne) - CORRIGIDO
             7'b1100011:
                 imm_out = {{19{instrucao[31]}}, instrucao[31], instrucao[7],
-                           instrucao[30:25], instrucao[11:8], opcode};
+                           instrucao[30:25], instrucao[11:8], 1'b0};
 
             // U-type (ex.: lui, auipc)
             7'b0110111, // LUI
