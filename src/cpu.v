@@ -36,7 +36,6 @@ module cpu (
     wire MemtoReg;
     wire [1:0] ALUOp; 
 
-
     control ctrl(
         .opcode(opcode),
         .Branch(Branch),
@@ -61,7 +60,7 @@ module cpu (
 
     imm_gen immGen(
         .instrucao(instrucao),
-        .immediate(immediate)
+        .imm_out(immediate)
     );
 
     // ALU
@@ -71,7 +70,7 @@ module cpu (
     wire zero;
 
     alu_control aluCtrl(
-        .aluOp(ALUOp),
+        .ALUOp(ALUOp),
         .funct3(funct3),
         .funct7(funct7),
         .alu_control(alu_control)
@@ -117,5 +116,23 @@ module cpu (
         .entrada2(branch_alvo),
         .saida(pc_prox)
     );
+
+    // ===== DEBUG =====
+    integer i;
+    always @(posedge clock) begin
+        if (!reset) begin
+            $display("\n=== Ciclo %d===", i);
+            $display("PC=%0d Instrucao=%h", pc, instrucao);
+            $display("opcode=%b funct3=%b funct7=%b rs1=%0d rs2=%0d rd=%0d", opcode, funct3, funct7, rs1, rs2, rd);
+            $display("ALUOp=%b alu_control=%b", ALUOp, alu_control);
+            $display("read_data1=%0d read_data2=%0d immediate=%0d", read_data1, read_data2, immediate);
+            $display("ALU entrada1=%0d entrada2=%0d resultado=%0d zero=%b", read_data1, alu_entrada2, alu_result, zero);
+            $display("Branch=%b MemRead=%b MemWrite=%b ALUSrc=%b RegWrite=%b MemtoReg=%b", Branch, MemRead, MemWrite, ALUSrc, RegWrite, MemtoReg);
+            if (MemWrite)
+                $display("** Escrevendo na Memoria: endereco=%0d dado=%0d", alu_result, read_data2);
+            if (MemRead)
+                $display("** Lendo da Memoria: endereco=%0d dado=%0d", alu_result, MemRead_data);
+        end
+    end
 
 endmodule

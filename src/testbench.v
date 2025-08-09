@@ -24,18 +24,18 @@ module testbench;
         #10;
         reset = 0;
 
-        #100;
+        #50;
 
         $display("=== Resultado do Testbench: ===");
 
         
 
-        $display("x1 = %d", uut.registradores.registradores[1]);
+        $display("x2 = %d", uut.registradores.registradores[2]);
+        $display("x3 = %d", uut.registradores.registradores[3]);
         $display("x4 = %d", uut.registradores.registradores[4]);
-        $display("x5 = %d", uut.registradores.registradores[5]);
-        $display("x6 = %d", uut.registradores.registradores[6]);
         $display("x7 = %d", uut.registradores.registradores[7]);
-        $display("Data Memory[1] =%d", uut.dataMem.memoria[1]);
+        $display("x7 = %d", uut.registradores.registradores[7]);
+        $display("Data Memory[0] =%d", uut.dataMem.memoria[2]);
 
         $finish;
     end
