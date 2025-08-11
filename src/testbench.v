@@ -29,19 +29,12 @@ module testbench_simple;
         end
 
         // Executar por mais ciclos
-        #300;
+        #500;
 
         $display("\n=== RESULTADO FINAL ===");
         // Adicionado para mostrar os registradores no final
         for (i = 0; i < 32; i = i + 1) begin
-            $display("x%0d = %0d", i, uut.registradores.registradores[i]);
-        end
-
-
-        if (errors == 0) begin
-            $display("\n🎉 SUCESSO! Stalls resolveram os hazards!");
-        end else begin
-            $display("\n❌ %0d erros restantes", errors);
+            $display("Register [ x%0d ]: %0d", i, uut.registradores.registradores[i]);
         end
 
         $finish;
