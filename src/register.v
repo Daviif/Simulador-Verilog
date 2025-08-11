@@ -15,7 +15,7 @@ module register(
 
     always @(posedge clock) begin
         if (RegWrite && rd != 0) begin
-            registradores[rd] <= write_data;
+            registradores[rd] = write_data;
         end
     end
 

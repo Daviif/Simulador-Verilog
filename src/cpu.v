@@ -6,6 +6,7 @@ module cpu (
     // PC e Instrução
     wire [31:0] pc, pc_prox, pc_plus4;
     wire [31:0] instrucao;
+    wire pc_write;
 
     assign pc_plus4 = pc + 32'd4;
 
@@ -13,7 +14,8 @@ module cpu (
         .clock(clock),
         .reset(reset),
         .pc_prox(pc_prox),
-        .pc(pc)
+        .pc(pc),
+        .pc_write(pc_write)
     );
 
     instruction_memory InstMem (
@@ -29,12 +31,29 @@ module cpu (
     wire [4:0] rs2    = instrucao[24:20];
     wire [6:0] funct7 = instrucao[31:25];
 
+    // Registradores da instrução anterior (pipeline simples de 1 estágio)
+    reg [4:0] prev_rd;
+    reg prev_RegWrite;
+    reg stall_cycle;
+
     wire [31:0] read_data1, read_data2;
     wire [31:0] immediate;
 
     wire Branch, MemRead, MemWrite, ALUSrc, RegWrite;
     wire MemtoReg;
     wire [1:0] ALUOp; 
+    
+    // Detecção de hazard simplificada - só 1 ciclo de stall
+    wire raw_hazard = prev_RegWrite && prev_rd != 5'b0 && 
+                      ((prev_rd == rs1 && rs1 != 5'b0) || 
+                       (prev_rd == rs2 && rs2 != 5'b0));
+    
+    // Se há hazard, insere um stall
+    assign pc_write = ~raw_hazard;
+    
+    // Durante stall, desabilita TODOS os controles de escrita
+    wire RegWrite_safe = RegWrite & ~raw_hazard;
+    wire MemWrite_safe = MemWrite & ~raw_hazard;
 
     control ctrl(
         .opcode(opcode),
@@ -49,7 +68,7 @@ module cpu (
 
     register registradores(
         .clock(clock),
-        .RegWrite(RegWrite),
+        .RegWrite(RegWrite_safe),
         .rs1(rs1),
         .rs2(rs2),
         .rd(rd),
@@ -90,7 +109,7 @@ module cpu (
     data_memory dataMem(
         .clock(clock),
         .MemRead(MemRead),
-        .MemWrite(MemWrite),
+        .MemWrite(MemWrite_safe),
         .endereco(alu_result),
         .write_data(read_data2),
         .read_data(MemRead_data)
@@ -116,5 +135,27 @@ module cpu (
         .entrada2(branch_alvo),
         .saida(pc_prox)
     );
+    
+    // Pipeline tracking corrigido
+    always @(posedge clock or posedge reset) begin
+        if (reset) begin
+            prev_rd <= 5'b0;
+            prev_RegWrite <= 1'b0;
+            stall_cycle <= 1'b0;
+        end else begin
+            // Sempre atualiza, mas durante stall desabilita prev_RegWrite
+            // para que no próximo ciclo não detecte hazard novamente
+            if (raw_hazard) begin
+                // Durante stall, mantém prev_rd mas desabilita prev_RegWrite
+                prev_RegWrite <= 1'b0;
+                stall_cycle <= 1'b1;
+            end else begin
+                // Operação normal
+                prev_rd <= rd;
+                prev_RegWrite <= RegWrite;
+                stall_cycle <= 1'b0;
+            end
+        end
+    end
 
 endmodule
