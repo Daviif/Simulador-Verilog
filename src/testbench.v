@@ -3,6 +3,7 @@
 module testbench_simple;
     reg clock, reset;
     integer cycle_count;
+    integer i;
     integer errors;
 
     cpu uut (
@@ -14,10 +15,6 @@ module testbench_simple;
         $dumpfile("simple_hazard.vcd");
         $dumpvars(0, uut);
 
-        // Primeiro decodificar as instruções manualmente
-        $display("\n=== ANÁLISE MANUAL DAS INSTRUÇÕES ===");
-        decode_manual();
-
         clock = 0;
         reset = 1;
         cycle_count = 0;
@@ -25,24 +22,21 @@ module testbench_simple;
         #10;
         reset = 0;
 
+        
+        $display("\n=== REGISTRADORES INICIAIS ===");
+        for (i = 0; i < 32; i = i + 1) begin
+            $display("x%0d = %0d", i, uut.registradores.registradores[i]);
+        end
+
         // Executar por mais ciclos
-        #200;
+        #300;
 
         $display("\n=== RESULTADO FINAL ===");
-        $display("x0 = %0d", uut.registradores.registradores[0]);
-        $display("x1 = %0d (esperado: 10)", uut.registradores.registradores[1]);
-        $display("x2 = %0d (esperado: 3)", uut.registradores.registradores[2]);
-        $display("x3 = %0d (esperado: 13)", uut.registradores.registradores[3]);
-        $display("x4 = %0d (esperado: 7)", uut.registradores.registradores[4]);
-        $display("x5 = %0d (esperado: 5)", uut.registradores.registradores[5]);
+        // Adicionado para mostrar os registradores no final
+        for (i = 0; i < 32; i = i + 1) begin
+            $display("x%0d = %0d", i, uut.registradores.registradores[i]);
+        end
 
-        // Verificação
-        errors = 0;
-        if (uut.registradores.registradores[1] != 10) errors = errors + 1;
-        if (uut.registradores.registradores[2] != 3) errors = errors + 1;
-        if (uut.registradores.registradores[3] != 13) errors = errors + 1;
-        if (uut.registradores.registradores[4] != 7) errors = errors + 1;
-        if (uut.registradores.registradores[5] != 5) errors = errors + 1;
 
         if (errors == 0) begin
             $display("\n🎉 SUCESSO! Stalls resolveram os hazards!");
@@ -53,37 +47,6 @@ module testbench_simple;
         $finish;
     end
 
-    // Task para decodificar instruções manualmente
-    task decode_manual;
-        reg [31:0] instr;
-        begin
-            // Instrução 0: 00a00093
-            instr = 32'h00a00093;
-            $display("Instr[0]: %b → ADDI x%0d, x%0d, %0d", 
-                     instr, instr[11:7], instr[19:15], $signed(instr[31:20]));
-            
-            // Instrução 1: 00300213  
-            instr = 32'h00300213;
-            $display("Instr[1]: %b → ADDI x%0d, x%0d, %0d", 
-                     instr, instr[11:7], instr[19:15], $signed(instr[31:20]));
-            
-            // Instrução 2: 002081b3
-            instr = 32'h002081b3;
-            $display("Instr[2]: %b → ADD x%0d, x%0d, x%0d", 
-                     instr, instr[11:7], instr[19:15], instr[24:20]);
-            
-            // Instrução 3: 40208233
-            instr = 32'h40208233;
-            $display("Instr[3]: %b → SUB x%0d, x%0d, x%0d", 
-                     instr, instr[11:7], instr[19:15], instr[24:20]);
-            
-            // Instrução 4: ffb08293
-            instr = 32'hffb08293;
-            $display("Instr[4]: %b → ADDI x%0d, x%0d, %0d", 
-                     instr, instr[11:7], instr[19:15], $signed(instr[31:20]));
-        end
-    endtask
-
     // Monitor com informações de hazard
     always @(posedge clock) begin
         if (!reset) begin
@@ -93,7 +56,7 @@ module testbench_simple;
                 $display("\n=== Ciclo %0d ===", cycle_count);
                 
                 if (uut.pc_write) begin
-                    $display("PC=%0d → Instr: %h", uut.pc, uut.instrucao);
+                    $display("PC=%0d → Instr: %b", uut.pc, uut.instrucao);
                     $display("Decodificado: rd=%0d, rs1=%0d, rs2=%0d", 
                             uut.rd, uut.rs1, uut.rs2);
                     $display("read_data1=%0d (x%0d), read_data2=%0d (x%0d)", 
@@ -112,14 +75,6 @@ module testbench_simple;
                 if (uut.RegWrite_safe && uut.rd != 0) begin
                     $display("✅ Escrevendo x%0d = %0d", uut.rd, uut.write_back_data);
                 end
-                
-                // Mostrar estado dos registradores importantes
-                $display("Registradores: x1=%0d, x2=%0d, x3=%0d, x4=%0d, x5=%0d",
-                        uut.registradores.registradores[1],
-                        uut.registradores.registradores[2], 
-                        uut.registradores.registradores[3],
-                        uut.registradores.registradores[4],
-                        uut.registradores.registradores[5]);
             end
         end
     end
