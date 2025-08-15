@@ -16,9 +16,10 @@ module data_memory(
         end
     end
 
-    // Escrita
-    always @(*) begin
-        if (MemWrite) begin
+
+    //leitura
+    always @(posedge clock) begin
+        if (MemRead) begin
             case (funct3)
                 3'b010: begin // LW - Load Word (32-bit)
                     read_data_reg = {memoria[endereco+3], memoria[endereco+2], 
