@@ -40,7 +40,7 @@ module testbench_simple;
         $finish;
     end
 
-    // Monitor com informações de hazard
+    // Monitor com informações de hazard E DEBUG DE PATH DE DADOS
     always @(posedge clock) begin
         if (!reset) begin
             cycle_count = cycle_count + 1;
@@ -50,11 +50,21 @@ module testbench_simple;
                 
                 if (uut.pc_write) begin
                     $display("PC=%0d → Instr: %b", uut.pc, uut.instrucao);
-                    $display("Decodificado: rd=%0d, rs1=%0d, rs2=%0d", 
-                            uut.rd, uut.rs1, uut.rs2);
+                    $display("Decodificado: rd=%0d, rs1=%0d, rs2=%0d, funct3=%b", 
+                            uut.rd, uut.rs1, uut.rs2, uut.funct3);
                     $display("read_data1=%0d (x%0d), read_data2=%0d (x%0d)", 
                             uut.read_data1, uut.rs1, uut.read_data2, uut.rs2);
                     $display("prev_rd=%0d, prev_RegWrite=%b", uut.prev_rd, uut.prev_RegWrite);
+                    
+                    // DEBUG DO PATH DE DADOS
+                    $display("--- DEBUG PATH DE DADOS ---");
+                    $display("MemRead=%b, MemWrite=%b, MemtoReg=%b", 
+                            uut.MemRead, uut.MemWrite, uut.MemtoReg);
+                    $display("alu_result=%0d, MemRead_data=%0d", 
+                            uut.alu_result, uut.MemRead_data);
+                    $display("write_back_data=%0d (ALU=%0d, MEM=%0d)", 
+                            uut.write_back_data, uut.alu_result, uut.MemRead_data);
+                            
                 end else begin
                     $display("⏸️  STALL: PC=%0d (hazard detectado)", uut.pc);
                     $display("   prev_rd=%0d conflita com rs1=%0d ou rs2=%0d", 

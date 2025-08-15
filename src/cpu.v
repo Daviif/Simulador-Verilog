@@ -108,8 +108,9 @@ module cpu (
 
     data_memory dataMem(
         .clock(clock),
-        .MemRead(MemRead),
+        .MemRead(MemRead & ~raw_hazard),
         .MemWrite(MemWrite_safe),
+        .funct3(funct3),
         .endereco(alu_result),
         .write_data(read_data2),
         .read_data(MemRead_data)
