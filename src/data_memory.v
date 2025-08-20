@@ -18,7 +18,7 @@ module data_memory(
 
 
     //leitura
-    always @(posedge clock) begin
+    always @(*) begin
         if (MemRead) begin
             case (funct3)
                 3'b010: begin // LW - Load Word (32-bit)
@@ -43,7 +43,7 @@ module data_memory(
 
     assign read_data = read_data_reg;
 
-     always @(posedge clock) begin
+     always @(*) begin
         if (MemWrite) begin
             case (funct3)
                 3'b010: begin // SW - Store Word (32-bit)

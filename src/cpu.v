@@ -82,12 +82,10 @@ module cpu (
         .imm_out(immediate)
     );
     
-    wire [31:0] read_data1_fwd = (prev_RegWrite && prev_rd != 5'b0 && prev_rd == rs1) ? write_back_data : read_data1;
-    wire [31:0] read_data2_fwd = (prev_RegWrite && prev_rd != 5'b0 && prev_rd == rs2) ? write_back_data : read_data2;
-
+    
     // ALU
     wire [3:0] alu_control;
-    wire [31:0] alu_entrada2 = ALUSrc ? immediate : read_data2_fwd;
+    wire [31:0] alu_entrada2 = ALUSrc ? immediate : read_data2;
     wire [31:0] alu_result;
     wire zero;
 
@@ -99,7 +97,7 @@ module cpu (
     );
 
     alu alu(
-        .entrada1(read_data1_fwd),
+        .entrada1(read_data1),
         .entrada2(alu_entrada2),
         .alu_control(alu_control),
         .resultado(alu_result),
