@@ -11,7 +11,7 @@ module instruction_memory(
         
         // Debug: mostrar instruções carregadas
         $display("=== INSTRUÇÕES CARREGADAS ===");
-        for (i = 0; i < 15; i = i + 1) begin
+        for (i = 0; i < 13; i = i + 1) begin
             $display("memoria[%0d] = %b", i, memoria[i]);
         end
     end

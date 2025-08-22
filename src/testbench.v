@@ -4,6 +4,7 @@ module testbench_simple;
     reg clock, reset;
     integer cycle_count;
     integer i;
+    integer j;
     integer errors;
 
     cpu uut (
@@ -25,7 +26,12 @@ module testbench_simple;
         
         $display("\n=== REGISTRADORES INICIAIS ===");
         for (i = 0; i < 32; i = i + 1) begin
-            $display("x%0d = %0d", i, uut.registradores.registradores[i]);
+            $display("Register [ x%0d ]: %0d", i, uut.registradores.registradores[i]);
+        end
+
+        $display("\n=== DATA MEMORY INICIAIS ===");
+        for (j = 0; j < 32; j = j + 1) begin
+            $display("Memory [ x%0d ]: %0d", j, uut.dataMem.memoria[j]);
         end
 
         // Executar por mais ciclos
@@ -37,11 +43,16 @@ module testbench_simple;
             $display("Register [ x%0d ]: %0d", i, uut.registradores.registradores[i]);
         end
 
+        $display("\n=== DATA MEMORY FINAIS ===");
+        for (j = 0; j < 32; j = j + 1) begin
+            $display("Memory [ x%0d ]: %0d", j, uut.dataMem.memoria[j]);
+        end
+
         $finish;
     end
 
     // Monitor com informações de hazard E DEBUG DE PATH DE DADOS
-    always @(posedge clock) begin
+    /*always @(posedge clock) begin
         if (!reset) begin
             cycle_count = cycle_count + 1;
             
@@ -80,7 +91,7 @@ module testbench_simple;
                 end
             end
         end
-    end
+    end*/
 
     always begin
         #5 clock = ~clock;

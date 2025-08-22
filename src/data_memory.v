@@ -27,7 +27,7 @@ module data_memory(
                 end
                 3'b001: begin // LH - Load Halfword unsigned (16-bit)
                     read_data_reg = {16'b0, memoria[endereco+1], memoria[endereco]};
-                    $display("DEBUG: LH endereco=%0d, dados=%b", endereco, {memoria[endereco+1], memoria[endereco]});
+                    //$display("DEBUG: LH endereco=%0d, dados=%b", endereco, {memoria[endereco+1], memoria[endereco]});
                 end
                 3'b000: begin // LB - Load Byte unsigned (8-bit) 
                     read_data_reg = {24'b0, memoria[endereco]};
@@ -51,16 +51,16 @@ module data_memory(
                     memoria[endereco+1] <= write_data[15:8];
                     memoria[endereco+2] <= write_data[23:16];
                     memoria[endereco+3] <= write_data[31:24];
-                    $display("DEBUG: SW endereco=%0d, dados=%h", endereco, write_data);
+                    //$display("DEBUG: SW endereco=%0d, dados=%h", endereco, write_data);
                 end
                 3'b001: begin // SH - Store Halfword (16-bit)
                     memoria[endereco]   <= write_data[7:0];
                     memoria[endereco+1] <= write_data[15:8];
-                    $display("DEBUG: SH endereco=%0d, dados=%b", endereco, write_data[15:0]);
+                   // $display("DEBUG: SH endereco=%0d, dados=%b", endereco, write_data[15:0]);
                 end
                 3'b000: begin // SB - Store Byte (8-bit)
                     memoria[endereco] <= write_data[7:0];
-                    $display("DEBUG: SB endereco=%0d, dados=%h", endereco, write_data[7:0]);
+                    //$display("DEBUG: SB endereco=%0d, dados=%h", endereco, write_data[7:0]);
                 end
                 default: begin
                     $display("DEBUG: Operação de store desconhecida funct3=%b", funct3);
