@@ -43,7 +43,7 @@ module data_memory(
 
     assign read_data = read_data_reg;
 
-     always @(*) begin
+     always @(posedge clock) begin
         if (MemWrite) begin
             case (funct3)
                 3'b010: begin // SW - Store Word (32-bit)

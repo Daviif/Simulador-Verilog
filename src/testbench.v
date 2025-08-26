@@ -38,7 +38,7 @@ module testbench_simple;
         #500;
 
         $display("\n=== RESULTADO FINAL ===");
-        // Adicionado para mostrar os registradores no final
+
         for (i = 0; i < 32; i = i + 1) begin
             $display("Register [ x%0d ]: %0d", i, uut.registradores.registradores[i]);
         end
