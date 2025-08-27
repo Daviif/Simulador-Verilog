@@ -7,7 +7,7 @@ module instruction_memory(
     integer i;
     initial begin
          // Carregar programa
-        $readmemb("programa.bin", memoria, 0, 12);
+        $readmemb("entrada.bin", memoria, 0, 12);
         
         // Debug: mostrar instruções carregadas
         $display("=== INSTRUÇÕES CARREGADAS ===");
